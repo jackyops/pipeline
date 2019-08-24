@@ -51,6 +51,7 @@ node {
 
     stage('sonar result post'){
         sleep 10
+	println("http://192.168.0.114:9000/api/issues/search?componentRoots=${SONAR_PROJECT_KEY}")
         def getSonarIssuesCmd = "curl  GET -v http://192.168.0.114:9000/api/issues/search?componentRoots=${SONAR_PROJECT_KEY}"
 	process = [ 'bash', '-c', getSonarIssuesCmd].execute().text
 	println("here is :"+ process)
