@@ -52,7 +52,7 @@ node {
         sleep 10
         def getSonarIssuesCmd = "curl  GET -v http://192.168.0.114:9000/api/issues/search?componentRoots=${SONAR_PROJECT_KEY}"
 	process = [ 'bash','-c',getSonarIssuesCmd].execute().text
-	// def jsonSlurper = new JsonSlurper()
+	def jsonSlurper = new JsonSlurper()
 	// def issueMap = jsonSlurper.parseText(process)
 
     }
