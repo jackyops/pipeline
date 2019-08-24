@@ -43,7 +43,7 @@ node {
     stage('sonar scan'){
         def scannerHome = tool 'sonarClient';
         withSonarQubeEnv('sonar') {
-            sh "echo ${scannerHome}"
+            sh "echo ${WORKSPACE}/${SONAR_SOURCES}"
             sh "is workspace ${WORKSPACE}"
             sh "${scannerHome}/bin/sonar-runner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=${WORKSPACE}/${SONAR_SOURCES}"
         }
