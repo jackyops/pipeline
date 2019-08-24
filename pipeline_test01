@@ -1,5 +1,6 @@
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
+// import groovy.json.*
 
 node {
     def artiServer
@@ -53,8 +54,10 @@ node {
         def getSonarIssuesCmd = "curl  GET -v http://192.168.0.114:9000/api/issues/search?componentRoots=${SONAR_PROJECT_KEY}"
 	process = [ 'bash','-c',getSonarIssuesCmd].execute().text
 	def jsonSlurper = new JsonSlurper()
-	def issueMap = JsonSlurper.parseText(process)
-
+	def issueMap = jsonSlurper.parseText(process)
+	if(issueMap.total>10){
+            break
+        }
     }
     stage('xray scan'){
         
