@@ -1,7 +1,14 @@
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
 node {
     def artiServer
     def buildInfo
     def rtMaven
+    
+    def SONAR_SOURCES = 'maven-example/multi3/'
+    def SONAR_HOST_URL = 'http://192.168.0.114:9000'
+    def SONAR_PROJECT_KEY = "${JOB_NAME}"
     
     stage('SCM'){
         git 'http://gitlab.jackyops.com/jacky/project-examples.git'
@@ -14,7 +21,10 @@ node {
     }
     
     stage('change version tag'){
-        
+        sh label: '', script: 'sed -i \"s/version_tag_for_build/1.0.$BUILD_NUMBER/g\" ./maven-example/pom.xml'
+        sh label: '', script: 'sed -i \"s/version_tag_for_build/1.0.$BUILD_NUMBER/g\" ./maven-example/multi1/pom.xml'
+        sh label: '', script: 'sed -i \"s/version_tag_for_build/1.0.$BUILD_NUMBER/g\" ./maven-example/multi2/pom.xml'
+        sh label: '', script: 'sed -i \"s/version_tag_for_build/1.0.$BUILD_NUMBER/g\" ./maven-example/multi3/pom.xml'
     }
       
     stage('Artifactory configuration'){
@@ -25,14 +35,19 @@ node {
     stage('Exec Maven'){
         rtMaven.run pom: 'maven-example/pom.xml', goals: 'clean install', buildInfo: buildInfo
     }
-
-    stage('Publish build info'){
-
+    
+    stage ('Publish build info') {
+        artiServer.publishBuildInfo buildInfo
     }
 
     stage('sonar scan'){
-
+        def scannerHome = tool 'sonarClient';
+        withSonarQubeEnv('sonar') {
+            sh "echo ${scannerHome}"
+            sh "${scannerHome}/bin/sonar-runner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=${SONAR_SOURCES}"
+        }
     }
+
     stage('sonar result post'){
         
     }
