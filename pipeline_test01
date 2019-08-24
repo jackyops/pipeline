@@ -44,7 +44,7 @@ node {
         def scannerHome = tool 'sonarClient';
         withSonarQubeEnv('sonar') {
             sh "echo ${scannerHome}"
-            sh "${scannerHome}/bin/sonar-runner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=${SONAR_SOURCES}"
+            sh "${scannerHome}/bin/sonar-runner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=${WORKSPACE}/${SONAR_SOURCES}"
         }
     }
 
