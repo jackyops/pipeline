@@ -14,10 +14,6 @@ node {
     }
     
     stage('change version tag'){
-        sh label: '', script: 'sed -i \"s/version_tag_for_build/1.0.$BUILD_NUMBER/g\"' ./maven-example/pom.xml
-        sh label: '', script: 'sed -i \"s/version_tag_for_build/1.0.$BUILD_NUMBER/g\"' ./maven-example/multi1/pom.xml
-        sh label: '', script: 'sed -i \"s/version_tag_for_build/1.0.$BUILD_NUMBER/g\"' ./maven-example/multi2/pom.xml
-        sh label: '', script: 'sed -i \"s/version_tag_for_build/1.0.$BUILD_NUMBER/g\"' ./maven-example/multi3/pom.xml
         
     }
       
@@ -31,11 +27,11 @@ node {
     }
 
     stage('Publish build info'){
-        artiServer.publishBuildInfo buildInfo
+
     }
 
     stage('sonar scan'){
-        echo "${publish_env}"
+
     }
     stage('sonar result post'){
         
