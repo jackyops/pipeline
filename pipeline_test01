@@ -1,0 +1,67 @@
+node {
+    def artiServer
+    def buildInfo
+    def rtMaven
+    
+    stage('SCM'){
+        git 'http://gitlab.jackyops.com/jacky/project-examples.git'
+    }
+    
+    stage('set env'){
+        artiServer = Artifactory.newServer url: "http://arti.jackyops.com/artifactory", credentialsId: 'jfrog-artifactory'
+        buildInfo = Artifactory.newBuildInfo()
+        rtMaven = Artifactory.newMavenBuild()
+    }
+    
+    stage('change version tag'){
+        sh label: '', script: 'sed -i \"s/version_tag_for_build/1.0.$BUILD_NUMBER/g\"' ./maven-example/pom.xml
+        sh label: '', script: 'sed -i \"s/version_tag_for_build/1.0.$BUILD_NUMBER/g\"' ./maven-example/multi1/pom.xml
+        sh label: '', script: 'sed -i \"s/version_tag_for_build/1.0.$BUILD_NUMBER/g\"' ./maven-example/multi2/pom.xml
+        sh label: '', script: 'sed -i \"s/version_tag_for_build/1.0.$BUILD_NUMBER/g\"' ./maven-example/multi3/pom.xml
+        
+    }
+      
+    stage('Artifactory configuration'){
+        rtMaven.tool = 'maven3'
+        rtMaven.deployer releaseRepo: 'internal-releases-local',snapshotRepo:'internal-snapshots-local',server: artiServer
+    }
+    
+    stage('Exec Maven'){
+        rtMaven.run pom: 'maven-example/pom.xml', goals: 'clean install', buildInfo: buildInfo
+    }
+
+    stage('Publish build info'){
+        artiServer.publishBuildInfo buildInfo
+    }
+
+    stage('sonar scan'){
+        echo "${publish_env}"
+    }
+    stage('sonar result post'){
+        
+    }
+    stage('xray scan'){
+        
+    }
+    stage('xray result post'){
+        
+    }
+    stage('auto test'){
+        
+    }
+    stage('auto test result post'){
+        
+    }
+    stage('promotion'){
+        
+    }
+    stage('deploy'){
+        
+    }
+    stage('deploy result post'){
+        
+    }
+    stage('mail'){
+        
+    }
+}
