@@ -56,9 +56,7 @@ node {
 	def json = JsonOutput.toJson(process)
         def jsonSlurper = new JsonSlurper()
         def issueMap = jsonSlurper.parseText(json)
-	if(issueMap.total>10){
-            break
-        }
+	println("here is :"+${issueMap})
     }
     stage('xray scan'){
         
