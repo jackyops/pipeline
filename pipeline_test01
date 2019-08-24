@@ -53,8 +53,9 @@ node {
         sleep 10
         def getSonarIssuesCmd = "curl  GET -v http://192.168.0.114:9000/api/issues/search?componentRoots=${SONAR_PROJECT_KEY}"
 	process = [ 'bash', '-c', getSonarIssuesCmd].execute().text
+	def json = JsonOutput.toJson(process)
         def jsonSlurper = new JsonSlurper()
-        def issueMap = jsonSlurper.parseText(process)
+        def issueMap = jsonSlurper.parseText(json)
     }
     stage('xray scan'){
         
